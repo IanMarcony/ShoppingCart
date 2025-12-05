@@ -43,10 +43,11 @@
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1",
+    "express": "^4.21.2",
     "express-async-errors": "^3.1.1",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.2.2",
+    "tsconfig-paths": "^4.2.0",
     "tsyringe": "^4.10.0",
     "typeorm": "^0.3.28",
     "uuid": "^13.0.0"
