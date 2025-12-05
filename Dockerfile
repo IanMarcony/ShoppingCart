@@ -14,6 +14,9 @@ RUN yarn install --frozen-lockfile
 # Copiar código da aplicação
 COPY . .
 
+# Executar migrations
+RUN yarn migration:run
+
 # Executar testes
 RUN yarn test
 
