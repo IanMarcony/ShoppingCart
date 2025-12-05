@@ -5,9 +5,6 @@ RUN apk add --no-cache netcat-openbsd
 
 WORKDIR /app
 
-# Copiar package.json e yarn.lock
-COPY package.json yarn.lock ./
-
 # Instalar dependências
 RUN yarn install --frozen-lockfile
 
