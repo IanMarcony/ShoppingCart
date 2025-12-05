@@ -11,6 +11,12 @@ COPY package.json ./
 # Instalar dependências
 RUN yarn install --frozen-lockfile
 
+# Script de inicialização
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh && \
+   chmod +x /usr/local/bin/docker-entrypoint.sh
+
 # Copiar código da aplicação
 COPY . .
 
@@ -20,9 +26,5 @@ RUN yarn test
 # Expor porta da aplicação
 EXPOSE 3333
 
-# Script de inicialização
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["yarn", "start"]
