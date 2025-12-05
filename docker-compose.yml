@@ -1,0 +1,55 @@
+version: "3.1"
+
+services:
+  shoppingcart_db:
+    container_name: "shoppingcart_db"
+    image: mysql:8.0
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_DATABASE: shoppingcart_db
+      MYSQL_ROOT_PASSWORD: storeroot
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pstoreroot",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  shoppingcart_api:
+    container_name: "shoppingcart_api"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3333"
+    environment:
+      MYSQL_DATABASE: shoppingcart_db
+      MYSQL_ROOT_PASSWORD: storeroot
+      MYSQL_USER: root
+      MYSQL_LOCALHOST: shoppingcart_db
+      MYSQL_PORT: 3306
+      API_PORT: 3333
+    depends_on:
+      shoppingcart_db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
