@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 
 export class Store1764964223340 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Criar tabela products
+    // Create products table
     await queryRunner.createTable(
       new Table({
         name: 'products',
@@ -38,7 +38,7 @@ export class Store1764964223340 implements MigrationInterface {
       }),
     );
 
-    // Criar tabela sales
+    // Create sales table
     await queryRunner.createTable(
       new Table({
         name: 'sales',
@@ -70,7 +70,7 @@ export class Store1764964223340 implements MigrationInterface {
       }),
     );
 
-    // Criar tabela sale_items
+    // Create sale_items table
     await queryRunner.createTable(
       new Table({
         name: 'sale_items',
@@ -109,7 +109,7 @@ export class Store1764964223340 implements MigrationInterface {
       }),
     );
 
-    // Criar foreign key sale_items -> sales
+    // Create foreign key sale_items -> sales
     await queryRunner.createForeignKey(
       'sale_items',
       new TableForeignKey({
@@ -122,7 +122,7 @@ export class Store1764964223340 implements MigrationInterface {
       }),
     );
 
-    // Criar foreign key sale_items -> products
+    // Create foreign key sale_items -> products
     await queryRunner.createForeignKey(
       'sale_items',
       new TableForeignKey({
@@ -137,11 +137,11 @@ export class Store1764964223340 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    // Remover foreign keys
+    // Drop foreign keys
     await queryRunner.dropForeignKey('sale_items', 'fk_sale_items_product');
     await queryRunner.dropForeignKey('sale_items', 'fk_sale_items_sale');
 
-    // Remover tabelas na ordem reversa
+    // Drop tables in reverse order
     await queryRunner.dropTable('sale_items');
     await queryRunner.dropTable('sales');
     await queryRunner.dropTable('products');
