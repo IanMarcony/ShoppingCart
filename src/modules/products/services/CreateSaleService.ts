@@ -27,12 +27,12 @@ export default class CreateSaleService {
       throw new AppError('Cart is empty. Please add items to proceed.');
     }
 
+    console.log("Creating sale for items:", items);
     const uniqueSKUs = Array.from(new Set(items.map(item => item.sku_product)));
     const products = await this.productsRepository.findBySKUs(uniqueSKUs);
 
     const productMap = new Map(products.map(p => [p.sku, p]));
 
-    // Validar se todos os produtos existem
     uniqueSKUs.forEach(sku => {
       if (!productMap.has(sku)) {
         throw new AppError(`Product with SKU "${sku}" not found.`);
@@ -64,23 +64,27 @@ export default class CreateSaleService {
 
       // Promotion: Buy 3 Google Homes for the price of 2
       if (product.name === 'Google Home') {
+        console.log(`Applying promotion for Google Home: Buy 3 for the price of 2. Quantity: ${quantity}`);
         const freeItems = Math.floor(quantity / 3);
         const payableItems = quantity - freeItems;
         subtotal = payableItems * unitPrice;
       }
       // Promotion: Buying more than 3 Alexa Speakers will have a 10% discount
       else if (product.name === 'Alexa Speaker' && quantity > 3) {
+        console.log(`Applying promotion for Alexa Speaker: 10% discount for buying more than 3. Quantity: ${quantity}`);
         const discountedPrice = unitPrice * 0.9;
         subtotal = quantity * discountedPrice;
       }
       // Promotion: Each sale of a MacBook Pro comes with a free Raspberry Pi
       else if (product.name === 'MacBook Pro') {
+        console.log(`Applying promotion for MacBook Pro: Free Raspberry Pi with each purchase. Quantity: ${quantity}`);
         subtotal = quantity * unitPrice;
         // Add Raspberry Pi free
         const raspberryPi = Array.from(productIdMap.values()).find(
           p => p.name === 'Raspberry Pi B',
         );
         if (raspberryPi) {
+          console.log(`Adding free Raspberry Pi for MacBook Pro purchase. Quantity: ${quantity}`);
           // Check if it has not already been added
           const existingRaspberry = saleItems.find(
             item => item.product_id === raspberryPi.id,
@@ -97,6 +101,7 @@ export default class CreateSaleService {
       }
       // Normal price
       else {
+        console.log(`Applying normal price for product: ${product.name}. Quantity: ${quantity}`);
         subtotal = quantity * unitPrice;
       }
 
@@ -114,6 +119,8 @@ export default class CreateSaleService {
       items: saleItems,
       total: Number(total.toFixed(2)),
     });
+
+    console.log("Sale created");
 
     return sale;
   }
